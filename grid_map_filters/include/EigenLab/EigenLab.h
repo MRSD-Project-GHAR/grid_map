@@ -247,6 +247,7 @@ namespace EigenLab
 		mFunctions.push_back("tan");
 		mFunctions.push_back("asin");
 		mFunctions.push_back("acos");
+		mFunctions.push_back("step");
 
 		// Matrix reduction operations.
 		mFunctions.push_back("trace");
@@ -862,7 +863,11 @@ namespace EigenLab
 			} else if(name == "mean") {
 				result.setLocal(arg.matrix().mean());
 				return;
-      } else if(name == "meanOfFinites") {
+			} else if(name == "step"){
+				result.local() = arg.matrix().array().cwiseSign();
+				result.mapLocal();
+				return;
+			} else if(name == "meanOfFinites") {
         result.setLocal(arg.matrix().meanOfFinites());
         return;
 			} else if(name == "sum") {
