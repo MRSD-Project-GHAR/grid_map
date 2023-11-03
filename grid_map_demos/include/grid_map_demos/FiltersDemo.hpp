@@ -18,6 +18,7 @@
 #pragma GCC diagnostic pop
 #include <ros/ros.h>
 #include <string>
+#include <std_srvs/Empty.h>
 
 namespace grid_map_demos {
 
@@ -53,8 +54,9 @@ class FiltersDemo
    */
   void callback(const grid_map_msgs::GridMap& message);
 
- private:
+  bool reloadServiceCallback(std_srvs::Empty::Request& req, std_srvs::Empty::Response& resp);
 
+private:
   //! ROS nodehandle.
   ros::NodeHandle& nodeHandle_;
 
@@ -69,6 +71,8 @@ class FiltersDemo
 
   //! Grid map publisher.
   ros::Publisher publisher_;
+
+  ros::ServiceServer server_;
 
   //! Filter chain.
   filters::FilterChain<grid_map::GridMap> filterChain_;

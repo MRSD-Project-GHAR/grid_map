@@ -24,6 +24,7 @@ FiltersDemo::FiltersDemo(ros::NodeHandle& nodeHandle, bool& success)
 
   subscriber_ = nodeHandle_.subscribe(inputTopic_, 1, &FiltersDemo::callback, this);
   publisher_ = nodeHandle_.advertise<grid_map_msgs::GridMap>(outputTopic_, 1, true);
+  server_ = nodeHandle_.advertiseService("reload_filters", &FiltersDemo::reloadServiceCallback, this);
 
   // Setup filter chain.
   if (!filterChain_.configure(filterChainParametersName_, nodeHandle)) {
@@ -68,6 +69,18 @@ void FiltersDemo::callback(const grid_map_msgs::GridMap& message)
   grid_map_msgs::GridMap outputMessage;
   GridMapRosConverter::toMessage(outputMap, outputMessage);
   publisher_.publish(outputMessage);
+}
+
+bool FiltersDemo::reloadServiceCallback(std_srvs::Empty::Request& req, std_srvs::Empty::Response& resp)
+{
+  nodeHandle_.param("filter_chain_parameter_name", filterChainParametersName_, std::string("grid_map_filters"));
+  if (!filterChain_.configure(filterChainParametersName_, nodeHandle_))
+  {
+    ROS_ERROR("Could not configure the filter chain!");
+    return false;
+  }
+
+  return true;
 }
 
 } /* namespace */
