@@ -73,7 +73,11 @@ void FiltersDemo::callback(const grid_map_msgs::GridMap& message)
 
 bool FiltersDemo::reloadServiceCallback(std_srvs::Empty::Request& req, std_srvs::Empty::Response& resp)
 {
-  nodeHandle_.param("filter_chain_parameter_name", filterChainParametersName_, std::string("grid_map_filters"));
+  if (!readParameters()) {
+    return false;
+  }
+
+  // nodeHandle_.param("filter_chain_parameter_name", filterChainParametersName_, std::string("grid_map_filters"));
   if (!filterChain_.configure(filterChainParametersName_, nodeHandle_))
   {
     ROS_ERROR("Could not configure the filter chain!");
